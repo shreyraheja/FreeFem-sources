@@ -20,7 +20,7 @@ template<class HpddmType>
 class DistributedCSR {
     public:
         HpddmType*                             _A;
-        KN<double>*                            _D;
+        KN<PetscReal>*                         _D;
         Mat                                _petsc;
         std::vector<Mat>*                     _vS;
         VecScatter                       _scatter;
@@ -150,7 +150,7 @@ void setVectorSchur(Type* ptA, KN<Tab>* const& mT, KN<double>* const& pL) {
     numSchur -= nbSchur;
     delete [] num;
     for(int k = 0; k < mT->n; ++k) {
-        MatriceMorse<PetscScalar>* mS = (mT->operator[](k)).A ? static_cast<MatriceMorse<PetscScalar>*>(&(*(mT->operator[](k)).A)) : nullptr;
+        MatriceMorse<HPDDM::upscaled_type<PetscScalar>>* mS = (mT->operator[](k)).A ? static_cast<MatriceMorse<HPDDM::upscaled_type<PetscScalar>>*>(&(*(mT->operator[](k)).A)) : nullptr;
         int n = mS ? mS->n : 0;
         std::vector<std::vector<std::pair<int, PetscScalar>>> tmp(n);
         if(mS) {
@@ -182,7 +182,7 @@ void setVectorSchur(Type* ptA, KN<Tab>* const& mT, KN<double>* const& pL) {
         PetscScalar* c;
         ia = ja = nullptr;
         c = nullptr;
-        HPDDM::MatrixCSR<PetscScalar>* dN = new_HPDDM_MatrixCSR<PetscScalar>(mS,true,s,is,js);//->n, mS->m, mS->nbcoef, s, is, js, mS->symetrique, true);
+        HPDDM::MatrixCSR<PetscScalar>* dN = new_HPDDM_MatrixCSR<PetscScalar>(mS, true, s, is, js);
         bool free = dN ? ptA->_A->HPDDM::template Subdomain<PetscScalar>::distributedCSR(numSchur, start, end, ia, ja, c, dN) : false;
         if(!ia && !ja && !c) {
             ia = new int[2]();
