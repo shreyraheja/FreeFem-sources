@@ -911,8 +911,8 @@ template<class Type>
 long globalNumbering(Type* const& A, KN<long>* const& numbering) {
     if(A) {
         numbering->resize(2 + A->getMatrix()->_n);
-        unsigned int g;
-        unsigned int* num = reinterpret_cast<unsigned int*>(&((*numbering)[0]));
+        long long g;
+        long* num = numbering->operator long*();
         A->distributedNumbering(num + 2, num[0], num[1], g);
     }
     return 0L;
@@ -950,9 +950,7 @@ void add() {
     addProd<Type<K, S>, ProdSchwarz, KN<HPDDM::upscaled_type<K>>, K>();
     addInv<Type<K, S>, InvSchwarz, KN<HPDDM::upscaled_type<K>>, K>();
     addScalarProduct< Type<K, S>, K >( );
-#if 0 // if you need this, please make sure you are using the master branch of HPDDM
     addArray<Type<K, S>>();
-#endif
     Global.Add("dmv", "(", new distributedMV<Type<K, S>, K>);
     Global.Add("destroyRecycling", "(", new OneOperator1_<bool, Type<K, S>*>(destroyRecycling<Type<K, S>, K>));
     Global.Add("statistics", "(", new OneOperator1_<bool, Type<K, S>*>(statistics<Type<K, S>>));

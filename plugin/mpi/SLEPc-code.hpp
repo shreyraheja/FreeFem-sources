@@ -34,9 +34,9 @@ void assign(K* pt, PetscScalar& kr, PetscScalar& ki) {
     *pt = K(kr, ki);
 }
 template<class K, typename std::enable_if<(std::is_same<PetscScalar, double>::value && std::is_same<K, std::complex<double>>::value)>::type* = nullptr>
-void distributedVec(unsigned int* num, unsigned int first, unsigned int last, K* const in, PetscScalar* pt, unsigned int n) { }
+void distributedVec(PetscInt* num, PetscInt first, PetscInt last, K* const in, PetscScalar* pt, PetscInt n) { }
 template<class K, typename std::enable_if<!(std::is_same<PetscScalar, double>::value && std::is_same<K, std::complex<double>>::value)>::type* = nullptr>
-void distributedVec(unsigned int* num, unsigned int first, unsigned int last, K* const in, PetscScalar* pt, unsigned int n) {
+void distributedVec(PetscInt* num, PetscInt first, PetscInt last, K* const in, PetscScalar* pt, PetscInt n) {
     HPDDM::Subdomain<K>::template distributedVec<0>(num, first, last, in, pt, n, 1);
 }
 template<class Type, class K>
@@ -221,7 +221,7 @@ AnyType eigensolver<Type, K>::E_eigensolver::operator()(Stack stack) const {
                     MatCreateVecs(ptA->_petsc, PETSC_NULL, &xi);
                     VecGetLocalSize(xr, &n);
                 }
-                for(PetscInt i = 0; i < nconv; ++i) {
+                for(int i = 0; i < nconv; ++i) {
                     PetscScalar kr, ki;
                     EPSGetEigenpair(eps, i, &kr, &ki, (eigenvectors || array) ? xr : NULL, (eigenvectors || array) && std::is_same<PetscScalar, double>::value && std::is_same<K, std::complex<double>>::value ? xi : NULL);
                     if(eigenvectors || array) {
@@ -239,7 +239,7 @@ AnyType eigensolver<Type, K>::E_eigensolver::operator()(Stack stack) const {
                         if(!isType && ptA->_A) {
                             KN<K> cpy(ptA->_A->getDof());
                             cpy = K(0.0);
-                            HPDDM::Subdomain<K>::template distributedVec<1>(ptA->_num, ptA->_first, ptA->_last, static_cast<K*>(cpy), pt, cpy.n, 1);
+                            HPDDM::Subdomain<K>::template distributedVec<1>(ptA->_num, ptA->_first, ptA->_last, static_cast<K*>(cpy), pt, static_cast<PetscInt>(cpy.n), 1);
                             ptA->_A->HPDDM::template Subdomain<PetscScalar>::exchange(static_cast<K*>(cpy));
                             if(eigenvectors)
                                 eigenvectors->set(i, cpy);
