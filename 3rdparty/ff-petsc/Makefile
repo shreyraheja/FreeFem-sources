@@ -74,8 +74,8 @@ PETSC_DOWNLOAD := $(PETSC_DOWNLOAD) --download-cmake
 endif
 PETSC_DOWNLOAD_C := $(PETSC_DOWNLOAD_C) --download-slepc
 ifeq ($(WIN32DLLTARGET),)
-PETSC_DOWNLOAD := $(PETSC_DOWNLOAD) --download-hpddm --download-hpddm-commit=83c462a
-PETSC_DOWNLOAD_C := $(PETSC_DOWNLOAD_C) --download-hpddm --download-hpddm-commit=83c462a
+PETSC_DOWNLOAD := $(PETSC_DOWNLOAD) --download-hpddm --download-hpddm-commit=7efbd32
+PETSC_DOWNLOAD_C := $(PETSC_DOWNLOAD_C) --download-hpddm --download-hpddm-commit=7efbd32
 endif
 endif
 ifeq ($(FF_generic_petsc), yes)
